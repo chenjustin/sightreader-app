@@ -1,0 +1,72 @@
+body {
+  background-color: #171617;
+  padding: 50px;
+  font-family: 'Helvetica', Arial, sans-serif;
+  font-size: 20px;
+}
+header {
+	margin: auto;
+	text-align: center;
+	color: white;
+	font-size: 32px;
+    font-family: "Times New Roman", Georgia, Serif;
+}
+
+#settings {
+	margin: auto;
+	margin-bottom: 50px;
+	padding: 20px;
+	width: 875px;
+	border: 1px solid #D2D3A9;
+	color: white;
+}
+
+#controls {
+	margin: auto;
+	width: 915px;
+	text-align: right;
+	display: none;
+}
+
+#settings select{
+   -moz-border-radius: 9px 9px 9px 9px;
+   -webkit-border-radius: 9px 9px 9px 9px;
+   border-radius: 9px 9px 9px 9px;
+   box-shadow: 1px 1px 11px #330033;
+   background: #D2D3A9;
+   font-size: 20px;
+}
+
+button {
+    background-color: #555555; /* Green */
+    border: none;
+    color: white;
+    padding: 6px 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+}
+button:hover {
+	border-top-color: #000000;
+	background: white;
+	color: #555555;
+}
+button:active {
+	border-top-color: #8c8c8c;
+	background: #33b5e5;
+	color: white;
+}
+
+#music {
+	margin: auto;
+	background-color: white;
+	margin-bottom: 20px;
+}
+
+footer{
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+}

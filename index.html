@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='stylesheets/style.css'/>
+	</head>
+	<body>
+		<header>
+			<h1>Sightreader</h1>
+		</header>
+
+		<div id="settings">
+			Key:<select id="key">
+					<option value="Cb">Cb</option>
+					<option value="C" selected="selected">C</option>
+					<option value="C#">C#</option>
+					<option value="Db">Db</option>
+					<option value="D">D</option>
+					<option value="Eb">Eb</option>
+					<option value="E">E</option>
+					<option value="F">F</option>
+					<option value="F#">F#</option>
+					<option value="Gb">Gb</option>
+					<option value="G">G</option>
+					<option value="Ab">Ab</option>
+					<option value="A">A</option>
+					<option value="Bb">Bb</option>
+					<option value="B">B</option>
+				</select>
+				<select id="majmin">
+					<option value="maj">Major</option>
+					<option value="min">Minor</option>
+				</select>
+			
+			Max leap interval:
+			<select id="maxint">
+				<option value="2">2nd</option>
+				<option value="3" selected="selected">3rd</option>
+				<option value="4">4th</option>
+				<option value="5">5th</option>
+				<option value="6">6th</option>
+				<option value="7">7th</option>
+				<option value="8">Octave</option>
+			</select>
+		
+			<button id="generate">Generate</button>
+		</div>
+
+		<main id="music"></main>
+
+		<div id="controls">
+			<button id="goback">Back</button>
+			<button id="another">Generate another</button>
+		</div>
+
+		<footer></footer>
+
+		<script src="https://raw.githubusercontent.com/paulrosen/abcjs/master/bin/abcjs_basic_2.3-min.js"></script>
+		<script src="js/script.js" type="text/javascript"></script>
+	</body>
+</html>
