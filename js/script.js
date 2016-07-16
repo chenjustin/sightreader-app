@@ -1,37 +1,128 @@
-//var button = document.createElement("button");
-//button.innerHTML = "Generate";
-//button.id="generate";
-//var body = document.getElementById("controls");
-//body.appendChild(button);
+// abcjs note table
+var bassNotes = ["C,,","D,,","E,,","F,,","G,,","A,,","B,,","C,","D,","E,","F,","G,","A,","B,","C","D"];
+var trebleNotes = ["A,","B,","C","D","E","F","G","A","B","c","d","e","f","g","a","b","c'","d'"];
 
-//Buttons
-var generate = document.getElementById("generate");
-var goBack = document.getElementById("goback");
-var generateAnother = document.getElementById("another");
+// DOM elements
+var music = document.getElementById("music");
+var settings = document.getElementById("settings");
+var controls = document.getElementById("controls");
 
-// 3. Add event handler
-generate.addEventListener ("click", function() {
+// Add event handlers
+document.getElementById("generate").addEventListener ("click", function() {
 	var timeSig = "M: 4/4\n";
 	var defLength = "L: 1/4\n";
 	var keySig = "K: "+ document.getElementById("key").value + document.getElementById("majmin").value + "\n";
 	var staffSetup = "%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n";
 	var maxLeap = document.getElementById("maxint").value;
-	var trebleClef = "[V: tclef]C/2C/2CC|cdec|gabc'|d'e'f'g'|";
-	var bassClef = "\n[V: bclef]B,,2C|C,E,F,C|A,B,A,B,|G,A,B,C|";
 
-	var song = timeSig + defLength + keySig + staffSetup + trebleClef + bassClef;
+	var song = timeSig + defLength + keySig + staffSetup + generateMusic(document.getElementById("key").value.substring(0,1));
 	
-	document.getElementById("settings").style.display="none";
-	document.getElementById("controls").style.display="block";
-	document.getElementById("music").style.display="block";
+	settings.style.display="none";
+	controls.style.display="block";
+	music.style.display="block";
+
 	ABCJS.renderAbc('music', song, {}, {scale: 1.4, staffwidth: 900});
-	console.log("clicked");
 });
 
-goBack.addEventListener ("click", function(){
-	document.getElementById("music").innerHTML="";
-	document.getElementById("music").style.display="none";
-	document.getElementById("settings").style.display="block";
-	document.getElementById("controls").style.display="none";
-	console.log("clicked");
+document.getElementById("goback").addEventListener ("click", function(){
+	music.innerHTML="";
+	music.style.display="none";
+	settings.style.display="block";
+	controls.style.display="none";
 });
+
+document.getElementById('majmin').addEventListener("change", function(){
+	if(document.getElementById('majmin').value == "min") {
+		//Major exclusives
+		document.getElementById("key").options[0].disabled = true;
+		document.getElementById("key").options[3].disabled = true;
+		document.getElementById("key").options[10].disabled = true;
+		document.getElementById("key").options[5].disabled = false;
+		document.getElementById("key").options[15].disabled = false;
+		document.getElementById("key").options[12].disabled = false;
+	}
+	else{
+		//Minor exclusives
+		document.getElementById("key").options[5].disabled = true;
+		document.getElementById("key").options[15].disabled = true;
+		document.getElementById("key").options[12].disabled = true;
+		document.getElementById("key").options[0].disabled = false;
+		document.getElementById("key").options[3].disabled = false;
+		document.getElementById("key").options[10].disabled = false;
+	}
+});
+
+document.getElementById('another').addEventListener("click", function(){
+	
+	var timeSig = "M: 4/4\n";
+	var defLength = "L: 1/4\n";
+	var keySig = "K: "+ document.getElementById("key").value + document.getElementById("majmin").value + "\n";
+	var staffSetup = "%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n";
+	var maxLeap = document.getElementById("maxint").value;
+	var song = timeSig + defLength + keySig + staffSetup + generateMusic(document.getElementById("key").value.substring(0,1));
+
+	music.innerHTML="";
+	ABCJS.renderAbc('music', song, {}, {scale: 1.4, staffwidth: 900});
+});
+
+function generateMusic(key){
+	var trebleShift = 0;
+	var bassShift = 0;
+	var trebleInt = 8;
+	var bassInt = 7;
+	var trebleClef = "[V: tclef]";
+	var bassClef = "\n[V: bclef]";
+
+	switch(key){
+		case "A":
+			trebleShift = -2;
+			bassShift = -2;
+			break;
+		case "B":
+			trebleShift = -1;
+			bassShift = -1;
+			break;
+		case "C":
+			//Do nothing
+			break;
+		case "D":
+			trebleShift = 1;
+			bassShift = 1;
+			break;
+		case "E":
+			trebleShift = 2;
+			bassShift = 2;
+			break;
+		case "F":
+			trebleShift = -4;
+			bassShift = 3;
+			break;
+		case "G":
+			trebleShift = -3;
+			bassShift = 4;
+			break;
+	};
+
+	trebleClef += trebleNotes[trebleInt+trebleShift];
+	bassClef += bassNotes[bassInt+bassShift];
+
+	for (var i = 15; i > 0; i--) {
+		var random = Math.random();
+
+		if(random < 0.60){
+			trebleClef += trebleNotes[trebleInt+trebleShift+1];
+			bassClef += bassNotes[bassInt+bassShift+1];
+		}
+		else{
+			trebleClef += trebleNotes[trebleInt+trebleShift-1];
+			bassClef += bassNotes[bassInt+bassShift-1];
+		}
+		if(i == 13 || i == 9 || i == 5 || i == 1){
+			trebleClef += "|";
+			bassClef += "|";
+		}
+	};
+
+	return trebleClef + bassClef;
+
+}

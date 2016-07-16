@@ -3,11 +3,11 @@ body {
   padding: 50px;
   font-family: 'Helvetica', Arial, sans-serif;
   font-size: 20px;
+  color: white;
 }
 header {
 	margin: auto;
 	text-align: center;
-	color: white;
 	font-size: 32px;
     font-family: "Times New Roman", Georgia, Serif;
 }
@@ -17,8 +17,7 @@ header {
 	margin-bottom: 50px;
 	padding: 20px;
 	width: 875px;
-	border: 1px solid #D2D3A9;
-	color: white;
+	border: 1px solid #E5E4B7;
 }
 
 #controls {
@@ -33,7 +32,7 @@ header {
    -webkit-border-radius: 9px 9px 9px 9px;
    border-radius: 9px 9px 9px 9px;
    box-shadow: 1px 1px 11px #330033;
-   background: #D2D3A9;
+   background: #E5E4B7;
    font-size: 20px;
 }
 
