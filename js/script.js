@@ -68,7 +68,7 @@ document.getElementById('another').addEventListener("click", function(){
 function generateMusic(key){
 	var trebleShift = 0;
 	var bassShift = 0;
-	var trebleInt = 8;
+	var trebleInt = 9;
 	var bassInt = 7;
 	var trebleClef = "[V: tclef]";
 	var bassClef = "\n[V: bclef]";
