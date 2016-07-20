@@ -1,6 +1,6 @@
 // abcjs note table
-var bassNotes = ["C,,","D,,","E,,","F,,","G,,","A,,","B,,","C,","D,","E,","F,","G,","A,","B,","C","D"];
-var trebleNotes = ["A,","B,","C","D","E","F","G","A","B","c","d","e","f","g","a","b","c'","d'"];
+var bassNotes = ["C,,","D,,","E,,","F,,","G,,","A,,","B,,","C,","D,","E,","F,","G,","A,","B,","C","D", "E"];
+var trebleNotes = ["A,","B,","C","D","E","F","G","A","B","c","d","e","f","g","a","b","c'"];
 
 // mapping abc notation to its real counterpart
 var map = {
@@ -32,8 +32,7 @@ var map = {
 	"g":"G5",
 	"a":"A5",
 	"b":"B5",
-	"c'":"C6",
-	"d'":"D6"
+	"c'":"C6"
 };
 
 // DOM elements
@@ -44,10 +43,10 @@ var controls = document.getElementById("controls");
 // Playback
 var song = new BandJS();
 song.setTimeSignature(4,4);
-song.setTempo(140);
+song.setTempo(100);
 var righthand = song.createInstrument("sawtooth");
 var lefthand = song.createInstrument("triangle");
-
+var player;
 
 // Add event handlers
 document.getElementById("generate").addEventListener ("click", function() {
@@ -63,15 +62,11 @@ document.getElementById("generate").addEventListener ("click", function() {
 	controls.style.display="block";
 	music.style.display="block";
 
-	ABCJS.renderAbc('music', song, {}, {scale: 1.8, staffwidth: 900});
+	ABCJS.renderAbc('music', song, {}, {scale: 2, staffwidth: 900, paddingtop: 50, paddingbottom: 50});
 });
 
 document.getElementById('play').addEventListener("click", function(){
-    
-    var player = song.finish();
 	player.play();
-
-	console.log("Play");
 });
 
 document.getElementById("goback").addEventListener ("click", function(){
@@ -104,6 +99,12 @@ document.getElementById('majmin').addEventListener("change", function(){
 });
 
 document.getElementById('another').addEventListener("click", function(){
+
+	song = new BandJS();
+	song.setTimeSignature(4,4);
+	song.setTempo(100);
+	righthand = song.createInstrument("sawtooth");
+	lefthand = song.createInstrument("triangle");
 	
 	var timeSig = "M: 4/4\n";
 	var defLength = "L: 1/4\n";
@@ -113,80 +114,119 @@ document.getElementById('another').addEventListener("click", function(){
 	var song = timeSig + defLength + keySig + staffSetup + generateMusic(document.getElementById("key").value.substring(0,1));
 
 	music.innerHTML="";
-	ABCJS.renderAbc('music', song, {}, {scale: 2, staffwidth: 900});
+	ABCJS.renderAbc('music', song, {}, {scale: 2, staffwidth: 900, paddingtop: 50, paddingbottom: 50});
 });
 
 function generateMusic(key){
-	var trebleShift = 0;
-	var bassShift = 0;
-	var trebleInt = 9;
-	var bassInt = 7;
+	var currentTrebleNote = 9;
+	var currentBassNote = 7;
 	var trebleClef = "[V: tclef]";
 	var bassClef = "\n[V: bclef]";
 
 	switch(key){
 		case "A":
-			trebleShift = -2;
-			bassShift = -2;
+			currentTrebleNote += -2;
+			currentBassNote += -2;
 			break;
 		case "B":
-			trebleShift = -1;
-			bassShift = -1;
+			currentTrebleNote += -1;
+			currentBassNote += -1;
 			break;
 		case "C":
 			//Do nothing
 			break;
 		case "D":
-			trebleShift = 1;
-			bassShift = 1;
+			currentTrebleNote += 1;
+			currentBassNote += 1;
 			break;
 		case "E":
-			trebleShift = 2;
-			bassShift = 2;
+			currentTrebleNote += 2;
+			currentBassNote += 2;
 			break;
 		case "F":
-			trebleShift = -4;
-			bassShift = 3;
+			currentTrebleNote += -4;
+			currentBassNote += 3;
 			break;
 		case "G":
-			trebleShift = -3;
-			bassShift = 4;
+			currentTrebleNote += -3;
+			currentBassNote += 4;
 			break;
 	};
 
 	// Starting notes
-	trebleClef += trebleNotes[trebleInt+trebleShift];
-	bassClef += bassNotes[bassInt+bassShift];
+	trebleClef += trebleNotes[currentTrebleNote];
+	bassClef += bassNotes[currentBassNote];
 
-	righthand.note("quarter",map[trebleNotes[trebleInt+trebleShift]]);
-	lefthand.note("quarter",map[bassNotes[bassInt+bassShift]]);
-
+	righthand.note("quarter",map[trebleNotes[currentTrebleNote]]);
+	lefthand.note("quarter",map[bassNotes[currentBassNote]]);
 
 	for (var i = 15; i > 0; i--) {
-		var random = Math.random();
+		
+		currentTrebleNote = generateNote(currentTrebleNote, "easy");
+		trebleClef += trebleNotes[currentTrebleNote];
+		righthand.note("quarter", map[trebleNotes[currentTrebleNote]]);
 
-		if(random < 0.60){
-			trebleInt += 1;
-			bassInt += 1;
-			trebleClef += trebleNotes[trebleInt+trebleShift];
-			bassClef += bassNotes[bassInt+bassShift];
-			righthand.note("quarter",map[trebleNotes[trebleInt+trebleShift]]);
-			lefthand.note("quarter",map[bassNotes[bassInt+bassShift]]);
-		}
-		else{
-			trebleInt -= 1;
-			bassInt -= 1;
-			trebleClef += trebleNotes[trebleInt+trebleShift];
-			bassClef += bassNotes[bassInt+bassShift];
-			righthand.note("quarter",map[trebleNotes[trebleInt+trebleShift]]);
-			lefthand.note("quarter",map[bassNotes[bassInt+bassShift]]);
-		}
+		currentBassNote = generateNote(currentBassNote, "easy");
+		bassClef += bassNotes[currentBassNote];
+		lefthand.note("quarter", map[bassNotes[currentBassNote]]);
+
 		if(i == 13 || i == 9 || i == 5){
 			trebleClef += "|";
 			bassClef += "|";
 		}
 	};
 
+	console.log(trebleClef);
+	console.log(bassClef);
+	player = song.finish();
 	return trebleClef + "|]" + bassClef + "|]";
+}
 
+function generateNote(start, difficulty){
+	var note = start;
+
+	if(start > 16){
+		console.log("Started > 16");
+		console.log(start);
+	}
+	if(start < 0){
+		console.log("Started < 0");
+		console.log(start);
+	}
+
+	if(difficulty == "easy"){
+		var random = Math.random();
+		if(random < 0.25){
+			note += 1;
+			if(note > 16){
+				console.log("plus 1. result: " + note);
+				return generateNote(start, difficulty);
+			}
+		}
+		else if(random < 0.5){
+			note -= 1;
+			if(note < 0){
+				console.log("minus 1. result: " + note);
+				return generateNote(start, difficulty);
+			}
+		}
+		else if(random < 0.75){
+			note += 0;
+		}
+		else if(random < 0.87){
+			note -= 2;
+			if(note < 0){
+				console.log("minus 2. result: " + note);
+				return generateNote(start, difficulty);
+			}
+		}
+		else if(random < 1.00){
+			note += 2;
+			if(note > 16){
+				console.log("plus 2. result: " + note);
+				return generateNote(start, difficulty);
+			}
+		}
+		return note;
+	}
 }
