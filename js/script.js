@@ -1,3 +1,5 @@
+// M: 4/4\nL: 1/4\nK: Cmaj\n%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n[V: tclef]xxxx|xxxx|xxxx|xxxx|]\n[V: bclef]xxxx|xxxx|xxxx|xxxx|]
+
 // abcjs note table
 var bassNotes = ["C,,","D,,","E,,","F,,","G,,","A,,","B,,","C,","D,","E,","F,","G,","A,","B,","C","D", "E"];
 var trebleNotes = ["A,","B,","C","D","E","F","G","A","B","c","d","e","f","g","a","b","c'"];
@@ -36,197 +38,182 @@ var map = {
 };
 
 // DOM elements
-var music = document.getElementById("music");
-var settings = document.getElementById("settings");
-var controls = document.getElementById("controls");
+var modal = document.getElementById("keysig-modal");
+var keySigButton = document.getElementById("keySignature");
+var close = document.getElementsByClassName("close")[0];
 
-// Playback
-var song = new BandJS();
-song.setTimeSignature(4,4);
-song.setTempo(100);
-var righthand = song.createInstrument("sawtooth");
-var lefthand = song.createInstrument("triangle");
-var player;
-
-// Add event handlers
-document.getElementById("generate").addEventListener ("click", function() {
-	var timeSig = "M: 4/4\n";
-	var defLength = "L: 1/4\n";
-	var keySig = "K: "+ document.getElementById("key").value + document.getElementById("majmin").value + "\n";
-	var staffSetup = "%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n";
-	var maxLeap = document.getElementById("maxint").value;
-
-	var song = timeSig + defLength + keySig + staffSetup + generateMusic(document.getElementById("key").value.substring(0,1));
-	
-	settings.style.display="none";
-	controls.style.display="block";
-	music.style.display="block";
-
-	ABCJS.renderAbc('music', song, {}, {scale: 2, staffwidth: 900, paddingtop: 50, paddingbottom: 50});
-});
-
-document.getElementById('play').addEventListener("click", function(){
-	player.play();
-});
-
-document.getElementById("goback").addEventListener ("click", function(){
-	music.innerHTML="";
-	music.style.display="none";
-	settings.style.display="block";
-	controls.style.display="none";
-
-});
-
-document.getElementById('majmin').addEventListener("change", function(){
-	if(document.getElementById('majmin').value == "min") {
-		//Major exclusives
-		document.getElementById("key").options[0].disabled = true;
-		document.getElementById("key").options[3].disabled = true;
-		document.getElementById("key").options[10].disabled = true;
-		document.getElementById("key").options[5].disabled = false;
-		document.getElementById("key").options[15].disabled = false;
-		document.getElementById("key").options[12].disabled = false;
-	}
-	else{
-		//Minor exclusives
-		document.getElementById("key").options[5].disabled = true;
-		document.getElementById("key").options[15].disabled = true;
-		document.getElementById("key").options[12].disabled = true;
-		document.getElementById("key").options[0].disabled = false;
-		document.getElementById("key").options[3].disabled = false;
-		document.getElementById("key").options[10].disabled = false;
-	}
-});
-
-document.getElementById('another').addEventListener("click", function(){
-
-	song = new BandJS();
-	song.setTimeSignature(4,4);
-	song.setTempo(100);
-	righthand = song.createInstrument("sawtooth");
-	lefthand = song.createInstrument("triangle");
-	
-	var timeSig = "M: 4/4\n";
-	var defLength = "L: 1/4\n";
-	var keySig = "K: "+ document.getElementById("key").value + document.getElementById("majmin").value + "\n";
-	var staffSetup = "%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n";
-	var maxLeap = document.getElementById("maxint").value;
-	var song = timeSig + defLength + keySig + staffSetup + generateMusic(document.getElementById("key").value.substring(0,1));
-
-	music.innerHTML="";
-	ABCJS.renderAbc('music', song, {}, {scale: 2, staffwidth: 900, paddingtop: 50, paddingbottom: 50});
-});
-
-function generateMusic(key){
-	var currentTrebleNote = 9;
-	var currentBassNote = 7;
-	var trebleClef = "[V: tclef]";
-	var bassClef = "\n[V: bclef]";
-
-	switch(key){
-		case "A":
-			currentTrebleNote += -2;
-			currentBassNote += -2;
-			break;
-		case "B":
-			currentTrebleNote += -1;
-			currentBassNote += -1;
-			break;
-		case "C":
-			//Do nothing
-			break;
-		case "D":
-			currentTrebleNote += 1;
-			currentBassNote += 1;
-			break;
-		case "E":
-			currentTrebleNote += 2;
-			currentBassNote += 2;
-			break;
-		case "F":
-			currentTrebleNote += -4;
-			currentBassNote += 3;
-			break;
-		case "G":
-			currentTrebleNote += -3;
-			currentBassNote += 4;
-			break;
-	};
-
-	// Starting notes
-	trebleClef += trebleNotes[currentTrebleNote];
-	bassClef += bassNotes[currentBassNote];
-
-	righthand.note("quarter",map[trebleNotes[currentTrebleNote]]);
-	lefthand.note("quarter",map[bassNotes[currentBassNote]]);
-
-	for (var i = 15; i > 0; i--) {
-		
-		currentTrebleNote = generateNote(currentTrebleNote, "easy");
-		trebleClef += trebleNotes[currentTrebleNote];
-		righthand.note("quarter", map[trebleNotes[currentTrebleNote]]);
-
-		currentBassNote = generateNote(currentBassNote, "easy");
-		bassClef += bassNotes[currentBassNote];
-		lefthand.note("quarter", map[bassNotes[currentBassNote]]);
-
-		if(i == 13 || i == 9 || i == 5){
-			trebleClef += "|";
-			bassClef += "|";
-		}
-	};
-
-	console.log(trebleClef);
-	console.log(bassClef);
-	player = song.finish();
-	return trebleClef + "|]" + bassClef + "|]";
+document.getElementById("keySignature").onclick = function(){
+	document.getElementById("keysig-modal").style.display = "block";
 }
 
-function generateNote(start, difficulty){
-	var note = start;
-
-	if(start > 16){
-		console.log("Started > 16");
-		console.log(start);
-	}
-	if(start < 0){
-		console.log("Started < 0");
-		console.log(start);
-	}
-
-	if(difficulty == "easy"){
-		var random = Math.random();
-		if(random < 0.25){
-			note += 1;
-			if(note > 16){
-				console.log("plus 1. result: " + note);
-				return generateNote(start, difficulty);
-			}
-		}
-		else if(random < 0.5){
-			note -= 1;
-			if(note < 0){
-				console.log("minus 1. result: " + note);
-				return generateNote(start, difficulty);
-			}
-		}
-		else if(random < 0.75){
-			note += 0;
-		}
-		else if(random < 0.87){
-			note -= 2;
-			if(note < 0){
-				console.log("minus 2. result: " + note);
-				return generateNote(start, difficulty);
-			}
-		}
-		else if(random < 1.00){
-			note += 2;
-			if(note > 16){
-				console.log("plus 2. result: " + note);
-				return generateNote(start, difficulty);
-			}
-		}
-		return note;
-	}
+document.getElementsByClassName("close")[0].onclick = function(){
+	document.getElementById("keysig-modal").style.display = "none";
 }
+
+window.onclick = function(event){
+    if (event.target == document.getElementById("keysig-modal")) {
+        document.getElementById("keysig-modal").style.display = "none";
+    }
+}
+
+// Preparation
+var difficulty = "";
+var time_signature = "";
+var key_signature = "";
+
+// Faster way to do this??
+document.getElementById("Cbmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Cb major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Cmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: C major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("C#maj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: C# major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Dbmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Db major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Dmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: D major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Ebmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Eb major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Emaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: E major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Fmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: F major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("F#maj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: F# major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Gbmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Gb major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Gmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: G major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Abmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Ab major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Amaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: A major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Bbmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Bb major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Bmaj").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: B major";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Cmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: C minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("C#min").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: C# minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Dmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: D minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("D#min").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+
+	document.getElementById("info-key-sig").innerHTML = "Key signature: D# minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Ebmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Eb minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Emin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: E minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Fmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: F minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("F#min").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: F# minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Gbmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Gb minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Gmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: G minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Abmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Ab minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Amin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: A minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("A#min").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: A# minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Bbmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: Bb minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+document.getElementById("Bmin").onclick = function(){
+	key_signature = "K: " + this.value + "\n";
+	document.getElementById("info-key-sig").innerHTML = "Key signature: B minor";
+    document.getElementById("keysig-modal").style.display = "none";
+}
+
+
+
+ABCJS.renderAbc('rendered', "M: 4/4\nL: 1/4\nK: Cmaj\n%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n[V: tclef]xxxx|xxxx|xxxx|xxxx|]\n[V: bclef]xxxx|xxxx|xxxx|xxxx|]", {}, {scale: 2, staffwidth: 920, paddingtop: 25, paddingbottom: 25});
