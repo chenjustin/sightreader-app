@@ -2,7 +2,6 @@ html, body {
 	padding: 0;
 	margin: 0px 0px 0px 0px;
 	background-color: #C5CAE9;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 /**
 #menubar {
@@ -21,13 +20,6 @@ html, body {
 }
 */
 
-h1 {
-	text-align: center;
-	font-family: "Times New Roman", Georgia, Serif;
-	font-size: 60px;
-	color: #0b0b0b;
-}
-
 #workspace {
 	padding-top: 30px;
 	width: 100%;
@@ -39,42 +31,60 @@ h1 {
 #rendered {
 	background-color: white;
 	margin: auto;
+	margin-top: 5%;
 	padding-left: 75px;
 	padding-right: 75px;
 	box-shadow: 2px 2px 10px #0a0a0a;
 }
-#info-area {
-	margin: auto;
-	margin-top: 10px;
-	width: 1085px;
+#info-area-container {
+	position: relative;
+	margin: 3.5% auto 1% auto;
+	width: 1100px;
 	color: black;
 	font-size: 20px;
+	display: flex;
+}
+#info-area-sub-container{
+	padding: 20px;
+	background-color: #3F51B5;
+	box-shadow: 2px 2px 10px #3e3e3e;
+}
+#info-area-sub-container div:nth-of-type(1){
+
+}
+#info-area-sub-container div:nth-of-type(2){
+	margin-top: 10px;
 }
 
 #control-bar {
-	background-color: #3F51B5;
-	height: 10%;
+	font-size: 35px;
+	color: white;
+	background: rgb(63,81,181);
+	background: linear-gradient(rgb(37,54,181), rgb(63, 81, 181)); /* #3F51B5 */
 	width: 100%;
-	top: 0;
-	left: 0;
-	right: 0;
 	box-shadow: 2px 2px 10px #3e3e3e;
-	padding: 0px 60px 0px 60px;
+	padding: 30px 300px 30px 80px;
+	display: flex;
 	-moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+nav {
+	margin: 0 auto;
+}
 
 .main-buttons {
 	width: 160px;
-	height: 40px;
+	height: 44px;
 	background-color: #7986CB;
-	border-color: silver;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
-	font-size: 20px;
+	/*#7986CB*/
+	font-family: "Roboto";
+	font-size: 18px;
 	color: white;
-	margin: 20px 20px 20px 0px;
 	cursor: pointer;
+	border-style: none;
+	border-radius: 5px;
+	box-shadow: 2px 2px 10px #3e3e3e;
 }
 
 /** Modal stuff*/
@@ -96,7 +106,7 @@ h1 {
 .modal-header{
 	background-color: #3F51B5;
 	padding: 20px 20px 20px 30px;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-family: "Roboto";
 	font-size: 40px;
 	color: white;
 }
@@ -106,9 +116,9 @@ h1 {
     width: 720px;
    	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.75s;
+    -webkit-animation-duration: 0.44s;
     animation-name: animatetop;
-    animation-duration: 0.75s
+    animation-duration: 0.44s
 }
 
 /* Add Animation */
@@ -142,8 +152,10 @@ h1 {
 	width: 100px;
 	height: 40px;
 	background-color: #7986CB;
-	border-color: silver;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	border-style: none;
+	border-radius: 5px;
+	box-shadow: 2px 2px 10px #3e3e3e;
+	font-family: "Roboto";
 	font-size: 18px;
 	color: white;
 	margin: 20px 20px 20px 20px;
@@ -152,4 +164,32 @@ h1 {
 
 .modal-keysig-buttons:hover{
 	background-color: #3F51B5;
+}
+
+p{
+	margin: 5px 0px;
+	color: white;
+	font-family: "Roboto";
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto-Regular-webfont.eot');
+    src: url('Roboto-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Roboto-Regular-webfont.woff') format('woff'),
+         url('Roboto-Regular-webfont.ttf') format('truetype'),
+         url('Roboto-Regular-webfont.svg#RobotoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto-Bold-webfont.eot');
+    src: url('Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Roboto-Bold-webfont.woff') format('woff'),
+         url('Roboto-Bold-webfont.ttf') format('truetype'),
+         url('Roboto-Bold-webfont.svg#RobotoBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
 }

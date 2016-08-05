@@ -6,22 +6,31 @@
 	</head>
 	<body>
 		<section id="control-bar">
-			<button id="keySignature" class="main-buttons">Key signature</button>
+			<div>Sightreader v1.0</div>
+			<nav>
+				<button id="keySignature" class="main-buttons">Key signature</button>
 
-			<button id="difficulty" class="main-buttons">Difficulty</button>
+				<button id="difficulty" class="main-buttons">Difficulty</button>
 
-			<button class="main-buttons">??</button>
+				<button class="main-buttons">??</button>
 
-			<button class="main-buttons">Idk</button>
+				<button class="main-buttons">Idk</button>
+			</nav>
 		</section>
 
 		<section id="workspace">
-			<h1>Site-reader</h1>
-			<div id="rendered"></div>
-			<div id="info-area">
-				<p id="info-key-sig">Key signature: C major</p>
-				<p>Difficulty: Easy</p>
-				<button class="main-buttons">Generate music</button>
+			
+			<main id="rendered"></main>
+			<div id="info-area-container">
+				<div id="info-area-sub-container">
+					<div>
+						<p id="info-key-sig"><strong>Key signature:</strong> C major</p>
+						<p id="info-difficulty"><strong>Difficulty:</strong> Easy</p>
+					</div>
+					<div>
+						<button id="generate-music-button" class="main-buttons">Generate music</button>
+					</div>
+				</div>
 			</div>
 		</section>
 
@@ -67,6 +76,18 @@
 					<button id="A#min" class="modal-keysig-buttons">A# minor</button>
 					<button id="Bbmin" class="modal-keysig-buttons">Bb minor</button>
 					<button id="Bmin" class="modal-keysig-buttons">B minor</button>
+				</div>
+
+			</div>
+		</div>
+		<div id="difficulty-modal" class="modal">
+			<div class="keysig-modal-content">
+				<div class="modal-header">
+					<span class="modal-header-title">Select difficulty</span>
+					<span class="close">x</span>
+				</div>
+				<div class="modal-section">
+					<button id="easymode" class="modal-keysig-buttons">Easy mode</button>
 				</div>
 
 			</div>
