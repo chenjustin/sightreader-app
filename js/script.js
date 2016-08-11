@@ -78,16 +78,21 @@ document.getElementById("generate-music-button").onclick = function(){
 	var abcstring = "";
 
 	if(difficulty == "easymode"){
-		abcstring = generateEasy();
+		abcstring = generateEasy(key_signature.substring(3,4));
 	}
 	console.log(key_signature.replace("K: ", "").replace("\n", ""))
 	setKeySignature(key_signature.replace("K: ", "").replace("\n", ""));
+	ABCJS.renderAbc("rendered", "M: 4/4\nL: 1/4\n" + key_signature + 
+		"%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n" + abcstring, {}, 
+		{scale: 2, staffwidth: 920, paddingtop: 25, paddingbottom: 25});
+	/*
 	ABCJS.renderAbc(
 		'rendered', 
 		"M: 4/4\nL: 1/4\n" + key_signature + 
 		"%%staves {lefthand righthand}\nV: tclef clef=treble\nV: bclef clef=bass\n" + 
 		"[V: tclef]cccc|xxxx|xxxx|xxxx|]\n[V: bclef]c,c,,d,,e,,|xxxx|xxxx|xxxx|]", 
 		{}, {scale: 2, staffwidth: 920, paddingtop: 25, paddingbottom: 25});
+	*/
 }
 
 /*
@@ -97,8 +102,172 @@ document.getElementById("generate-music-button").onclick = function(){
 	- No intervals higher than a 3rd
 	- No chords
 */
-function generateEasy(){
+function generateEasy(key){
 
+	var currentTrebleNote = 9;
+	var currentBassNote = 7;
+	var trebleClef = "[V: tclef]";
+	var bassClef = "\n[V: bclef]";
+
+	function generateBar(beats, clef){
+
+		function generateQuarterNote(){
+			// There's a 33% chance that the note will move up, down, or stay the same
+			if(clef == "treble"){
+				var rand = Math.random();
+				if(rand < 0.33){
+					currentTrebleNote -= 1;
+					trebleClef += trebleNotes[currentTrebleNote];
+				}
+				else if(rand < 0.66){
+					currentTrebleNote += 1;
+					trebleClef += trebleNotes[currentTrebleNote];
+				}
+				else{
+					trebleClef += trebleNotes[currentTrebleNote];
+				}
+			}
+			// Copy of the above except with bass
+			else{
+				var rand = Math.random();
+				if(rand < 0.33){
+					currentBassNote -= 1;
+					bassClef += bassNotes[currentBassNote];
+				}
+				else if(rand < 0.66){
+					currentBassNote += 1;
+					bassClef += bassNotes[currentBassNote];
+				}
+				else{
+					bassClef += bassNotes[currentBassNote];
+				}
+			}
+		}
+		function generateEighthNotes(){
+			for(var j = 0; j < 2; j++){
+				generateQuarterNote();
+				if(clef == "treble"){
+					trebleClef += "/2";
+				}
+				else{
+					bassClef += "/2";
+				}
+			}
+		}
+
+		// Create the specified number of beats in the measure by calling the above functions
+		for(var i = 0; i < beats; i++){
+			if(Math.random() < 0.8){
+				generateQuarterNote();
+			}
+			else{
+				generateEighthNotes();
+			}
+			if(clef == "treble"){
+				bassClef += "x";
+			}
+			else{
+				trebleClef += "x";
+			}
+		}
+		trebleClef += "|";
+		bassClef += "|";
+	}
+
+	//Change the starting note depending on the key.
+	switch(key){
+		case "A":
+			currentTrebleNote += -2;
+			currentBassNote += -2;
+			break;
+		case "B":
+			currentTrebleNote += -1;
+			currentBassNote += -1;
+			break;
+		case "C":
+			//Do nothing
+			break;
+		case "D":
+			currentTrebleNote += 1;
+			currentBassNote += 1;
+			break;
+		case "E":
+			currentTrebleNote += 2;
+			currentBassNote += 2;
+			break;
+		case "F":
+			currentTrebleNote += -4;
+			currentBassNote += 3;
+			break;
+		case "G":
+			currentTrebleNote += -3;
+			currentBassNote += 4;
+			break;
+	};
+
+	// Creates the first note manually. This is an edge case where we don't want the
+	// first note to be randomized.
+	// 50% chance that it will be on the treble clef, 50% bass clef
+	if(Math.random() < 0.5){
+
+		console.log("Yes");
+		// The first notes have a 25% chance of being eighth notes (just for some variety)
+		if(Math.random() < 0.25){
+			trebleClef += trebleNotes[currentTrebleNote] + "/2";
+			// The next note can either be a step above, below, or the same
+			var rand = Math.random();
+			if(rand < 0.33){
+				currentTrebleNote -= 1
+				trebleClef += trebleNotes[currentTrebleNote] + "/2";
+			}
+			else if(rand < 0.66){
+				currentTrebleNote += 1;
+				trebleClef += trebleNotes[currentTrebleNote] + "/2";
+			}
+			else{
+				trebleClef += trebleNotes[currentTrebleNote] + "/2";
+			}
+		}
+		else{
+			trebleClef += trebleNotes[currentTrebleNote];
+		}
+		bassClef += "x";
+		generateBar(3, "treble");
+	}
+	// A copy of the code above except "trebleClef" --> "bassClef"
+	else{
+		if(Math.random() < 0.25){
+			bassClef += bassNotes[currentBassNote] + "/2";
+			var rand = Math.random();
+			if(rand < 0.33){
+				currentBassNote -= 1;
+				bassClef += bassNotes[currentBassNote] + "/2";
+			}
+			else if(rand < 0.66){
+				currentBassNote += 1
+				bassClef += bassNotes[currentBassNote] + "/2";
+			}
+			else{
+				bassClef += bassNotes[currentBassNote] + "/2";
+			}
+		}
+		else{
+			bassClef += bassNotes[currentBassNote];
+		}
+		trebleClef += "x";
+		generateBar(3, "bass");
+	}
+
+	for(var i = 0; i < 3; i++){
+		if(Math.random() < 0.50){
+			generateBar(4, "treble");
+		}
+		else{
+			generateBar(4, "bass");
+		}
+	}
+
+	return trebleClef + "]" + bassClef + "]";
 }
 
 function setKeySignature(key){
