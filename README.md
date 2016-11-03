@@ -1,3 +1,3 @@
 # Sightreader-app
 
-[Link to app](https://justincfx.github.io/sightreader-app/)
+[Link to app](https://jusstin.github.io/sightreader-app/)
